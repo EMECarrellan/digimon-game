@@ -1,13 +1,17 @@
 import './App.css'
 import { useState, useEffect } from 'react';
+import JSConfetti from 'js-confetti'
 
 
 function App() {
   const [randomIndex, setRandomIndex] = useState(null)
   const [digimonInfo, setDigimonInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [answer, setAnswer] = useState('')
+  const [answer, setAnswer] = useState('');
   const [message, setMessage] = useState('');
+  const [score, setScore] = useState(Number(localStorage.getItem("score")));
+  const [autocomplete, setAutocomplete] = useState([]);
+  const jsConfetti = new JSConfetti()
   
   useEffect(() => {
     fetch('https://digimon-api.vercel.app/api/digimon')
@@ -19,6 +23,10 @@ function App() {
       setIsLoading(false)
     })
   }, [])
+
+  useEffect(() => {
+        localStorage.setItem("score", score)
+      }, [score])
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,10 +34,13 @@ function App() {
     const userGuess = answer.toLowerCase().trim();
     const realName = digimonInfo[randomIndex]?.name.toLowerCase();
     
-    userGuess === realName
-    ? setMessage("Has ganado")
-    : setMessage("Inténtalo de nuevo")
-    
+    if (userGuess === realName) {
+      setMessage("Has acertado")
+      setScore(prevScore => prevScore + 100)
+      jsConfetti.addConfetti()
+    } else {
+      setMessage("Inténtalo de nuevo")
+    }
     setAnswer('')
   }
 
@@ -42,6 +53,14 @@ function App() {
 
   const handleChange = (e) => {
     setAnswer(e.target.value);
+
+    if (answer.length > 0) {
+      const filtered = digimonInfo
+      .filter( item => item.name.toLowerCase().includes(answer.toLowerCase())).sort((a, b) => a.name.localeCompare(b.name))
+      setAutocomplete(filtered)
+    } else {
+      setAutocomplete([])
+    }
   }
 
   if (isLoading) {
@@ -55,17 +74,33 @@ function App() {
 return (
     <>
       <h1>Digimon guessing game</h1>
+      <h2>Puntuación: {score}</h2>
       <div className="card">
         <img src={digimonInfo?.[randomIndex]?.img} />
-        <form autoComplete="off" action="submit" onSubmit={handleSubmit}>
+        <form action="submit" onSubmit={handleSubmit}>
           <label>¿Cuál es este digimon?
+            <div>
             <input
               type="text"
               id="answer"
               name="answer"
               value={answer}
               onChange={handleChange}
-            />
+          />
+          {autocomplete.length > 0 && 
+            <ul>
+            {autocomplete.map((item, index) => (
+            <li key={index} onClick={() => {
+              setAnswer(item.name);
+              setAutocomplete([]);
+              }}>
+              <img src={item.img} alt="" />{item.name}
+            </li>
+          ))}
+            </ul>
+          }
+
+          </div>
           </label>
           <p>{message}</p>
           <button type="button" onClick={handleReset}>
