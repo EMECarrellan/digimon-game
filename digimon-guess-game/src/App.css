@@ -1,42 +1,217 @@
+/* Importamos una fuente estilo "Digital" de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+:root {
+  --digi-blue: #00f0ff;
+  --digi-orange: #ff9900;
+  --digi-dark: #0a0a12;
+  --digi-panel: rgba(20, 20, 35, 0.85);
+  --digi-text: #e0e0e0;
+}
+
+/* --- Estilos Globales --- */
+body {
+  background-color: var(--digi-dark);
+  /* Efecto de cuadrícula (Grid) del Mundo Digital */
+  background-image: 
+    linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--digi-text);
+  font-family: 'Orbitron', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #root {
-  max-width: 1280px;
+  width: 100%;
+  max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* --- Tipografía --- */
+h1 {
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  color: var(--digi-orange);
+  text-shadow: 0 0 10px rgba(255, 153, 0, 0.8);
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h2 {
+  font-size: 1.2rem;
+  color: var(--digi-blue);
+  border: 1px solid var(--digi-blue);
+  display: inline-block;
+  padding: 0.5em 1.5em;
+  border-radius: 20px;
+  background: rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
+/* --- Tarjeta Principal (Digivice Screen) --- */
 .card {
-  padding: 2em;
+  background: var(--digi-panel);
+  border: 2px solid var(--digi-blue);
+  border-radius: 15px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 
+    0 0 20px rgba(0, 240, 255, 0.2),
+    inset 0 0 20px rgba(0, 240, 255, 0.1);
+  backdrop-filter: blur(5px);
+  position: relative;
 }
 
-.read-the-docs {
-  color: #888;
+/* Imagen del Digimon a adivinar */
+.card > img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  margin-bottom: 1.5rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* --- Formulario e Inputs --- */
+label {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: var(--digi-blue);
+}
+
+/* Contenedor relativo para posicionar el autocompletado */
+label div {
+  position: relative; 
+  margin-top: 10px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--digi-blue);
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box; /* Importante para que no se salga del contenedor */
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--digi-orange);
+  box-shadow: 0 0 15px rgba(255, 153, 0, 0.4);
+}
+
+/* --- Autocompletado (La lista desplegable) --- */
+ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #0a0a12;
+  border: 1px solid var(--digi-blue);
+  border-top: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+}
+
+ul li {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  transition: background 0.2s;
+  text-align: left;
+}
+
+ul li:hover {
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--digi-blue);
+}
+
+ul li img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--digi-orange);
+}
+
+/* --- Botones --- */
+button {
+  background: transparent;
+  color: var(--digi-blue);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  border: 2px solid var(--digi-blue);
+  padding: 10px 20px;
+  margin: 10px 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  background: var(--digi-blue);
+  color: #000;
+  box-shadow: 0 0 20px var(--digi-blue);
+}
+
+/* Estilo específico para el botón de Reset (hacerlo naranja) */
+button[type="button"] {
+  border-color: var(--digi-orange);
+  color: var(--digi-orange);
+}
+
+button[type="button"]:hover {
+  background: var(--digi-orange);
+  color: #000;
+  box-shadow: 0 0 20px var(--digi-orange);
+}
+
+/* --- Mensajes --- */
+p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  height: 1.5rem; /* Reserva espacio para que no salte el contenido */
+  margin: 1rem 0;
+}
+
+/* Scrollbar personalizado para la lista */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--digi-blue);
+  border-radius: 4px;
 }
