@@ -4,7 +4,10 @@ import JSConfetti from 'js-confetti'
 
 
 function App() {
-  const [randomIndex, setRandomIndex] = useState(null)
+  const [randomIndex, setRandomIndex] = useState(() => {
+    const saved = localStorage.getItem("random")
+    return saved !== null ? Number(saved) : null
+  });
   const [digimonInfo, setDigimonInfo] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [answer, setAnswer] = useState('');
@@ -18,8 +21,11 @@ function App() {
     .then((res) => res.json())
     .then((data) => {
       setDigimonInfo(data);
-      const random = Math.floor(Math.random() * data.length);
-      setRandomIndex(random)
+
+      if (randomIndex === null) {
+        const random = Math.floor(Math.random() * data.length);
+        setRandomIndex(random);
+      }
       setIsLoading(false)
     })
   }, [])
@@ -27,6 +33,10 @@ function App() {
   useEffect(() => {
         localStorage.setItem("score", score)
       }, [score])
+
+  useEffect(() => {
+        localStorage.setItem("random", randomIndex)
+      }, [randomIndex])
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,6 +48,8 @@ function App() {
       setMessage("Has acertado")
       setScore(prevScore => prevScore + 100)
       jsConfetti.addConfetti()
+      const newRandom = Math.floor(Math.random() * digimonInfo.length);
+      setRandomIndex(newRandom);
     } else {
       setMessage("Inténtalo de nuevo")
     }
@@ -77,7 +89,8 @@ return (
       <h2>Puntuación: {score}</h2>
       <div className="card">
         <img src={digimonInfo?.[randomIndex]?.img} />
-        <form action="submit" onSubmit={handleSubmit}>
+        <p>{message}</p>
+        <form autoComplete='off' action="submit" onSubmit={handleSubmit}>
           <label>¿Cuál es este digimon?
             <div>
             <input
@@ -102,12 +115,11 @@ return (
 
           </div>
           </label>
-          <p>{message}</p>
-          <button type="button" onClick={handleReset}>
-            Reset
-          </button>
           <button>
             Comprobar respuesta
+          </button>
+          <button type="button" onClick={handleReset}>
+            Nuevo digimon
           </button>
         </form>
       </div>
